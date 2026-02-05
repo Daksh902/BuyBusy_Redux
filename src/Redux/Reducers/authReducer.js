@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 // firebase database
 import { db } from "../../firebaseInit";
-import { collection, addDoc, onSnapshot } from "firebase/firestore"; 
+import { collection, addDoc, onSnapshot, query, where, getDocs } from "firebase/firestore";
 
 // toast notification
 import { toast } from 'react-toastify';
@@ -11,10 +11,10 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // initial State to store data 
 // for list of all the users, if a user is logged in, data of loggedIn user
-const initialState = { 
-    userList: [], 
-    isLoggedIn: false, 
-    userLoggedIn: null 
+const initialState = {
+    userList: [],
+    isLoggedIn: false,
+    userLoggedIn: null
 };
 
 // Async thunk for getting list of all the users within the firebase database
@@ -43,7 +43,7 @@ export const createUserThunk = createAsyncThunk(
 
         // checking whether user's email already exist or not
         const index = userList.findIndex((user) => user.email === data.email);
-        
+
         // if email address already exists inside database
         if (index !== -1) {
             toast.error('Email address already in use !!');
@@ -79,15 +79,15 @@ export const createSessionThunk = createAsyncThunk(
             toast.error("Email does not exist, Try again or SignUp Instead!!!");
             return false;
         }
-        
+
         // if email found in database then match password
         if (userList[index].password === data.password) {
             toast.success("Sign In Successfully!!!");
-            
+
             // logging in user and storing its data in local variable
             thunkAPI.dispatch(setLoggedIn(true));
             thunkAPI.dispatch(setUserLoggedIn(userList[index]));
-            
+
             // generating user's login token and store user's data 
             window.localStorage.setItem("token", true);
             window.localStorage.setItem("index", JSON.stringify(userList[index]));
@@ -96,6 +96,56 @@ export const createSessionThunk = createAsyncThunk(
             // if password doesn't match in database
             toast.error("Wrong UserName/Password, Try Again");
             return false;
+        }
+    }
+);
+
+// AsyncThunk for Google SignIn
+export const signInWithGoogleThunk = createAsyncThunk(
+    "auth/signInWithGoogle",
+    async (googleUser, thunkAPI) => {
+        try {
+            // Check if user already exists in our database query Firestore directly
+            const q = query(collection(db, "buybusy-redux"), where("email", "==", googleUser.email));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                // User exists, log them in
+                const userDoc = querySnapshot.docs[0];
+                const existingUser = { id: userDoc.id, ...userDoc.data() };
+
+                thunkAPI.dispatch(setLoggedIn(true));
+                thunkAPI.dispatch(setUserLoggedIn(existingUser));
+
+                window.localStorage.setItem("token", true);
+                window.localStorage.setItem("index", JSON.stringify(existingUser));
+                toast.success("Sign In Successfully!!");
+            } else {
+                // New user, create database entry
+                const newUser = {
+                    name: googleUser.displayName || "Google User",
+                    email: googleUser.email,
+                    password: "google-auth-user", // dummy password
+                    cart: [],
+                    orders: []
+                };
+
+                const docRef = await addDoc(collection(db, "buybusy-redux"), newUser);
+
+                // Add the generated ID to our local object
+                const userWithId = { id: docRef.id, ...newUser };
+
+                // Log them in immediately
+                thunkAPI.dispatch(setLoggedIn(true));
+                thunkAPI.dispatch(setUserLoggedIn(userWithId));
+
+                window.localStorage.setItem("token", true);
+                window.localStorage.setItem("index", JSON.stringify(userWithId));
+                toast.success("Welcome! Account created successfully.");
+            }
+        } catch (error) {
+            console.error("Error signing in with Google:", error);
+            toast.error("Google Sign In failed. Please try again.");
         }
     }
 );

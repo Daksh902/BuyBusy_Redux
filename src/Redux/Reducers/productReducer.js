@@ -27,8 +27,10 @@ export const getInitialCartOrdersThunk = createAsyncThunk(
         if (isLoggedIn) {
             const unsub = onSnapshot(doc(db, "buybusy-redux", userLoggedIn.id), (doc) => {
                 const data = doc.data();
-                thunkAPI.dispatch(setCart(data.cart));
-                thunkAPI.dispatch(setMyOrders(data.orders));
+                if (data) {
+                    thunkAPI.dispatch(setCart(data.cart));
+                    thunkAPI.dispatch(setMyOrders(data.orders));
+                }
             });
             return () => unsub();
         }
@@ -89,7 +91,7 @@ export const increaseQuantThunk = createAsyncThunk(
         const { productReducer } = thunkAPI.getState();
         const index = productReducer.cart.findIndex((item) => item.name === product.name);
 
-        thunkAPI.dispatch(increaseProductQuantity(index));      
+        thunkAPI.dispatch(increaseProductQuantity(index));
         thunkAPI.dispatch(increaseTotalAmount(product.price));
         thunkAPI.dispatch(updateCartInDatabase());
     }
@@ -194,6 +196,15 @@ const productSlice = createSlice({
         },
         setCart: (state, action) => {
             state.cart = action.payload;
+            if (state.cart) {
+                let sum = 0, len = 0;
+                state.cart.forEach((item) => {
+                    sum += item.price * item.quantity;
+                    len += item.quantity;
+                });
+                state.total = sum;
+                state.itemInCart = len;
+            }
         },
         increaseTotalItem: (state) => {
             state.itemInCart++;
@@ -208,16 +219,7 @@ const productSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getInitialCartOrdersThunk.fulfilled, (state, action) => {
-                const cart = action.payload;
-                if (cart) {
-                    let sum = 0, len = 0;
-                    cart.forEach((item) => {
-                        sum += item.price * item.quantity;
-                        len += item.quantity;
-                    });
-                    state.total = sum;
-                    state.itemInCart = len;
-                }
+                // The logic has been moved to setCart to handle real-time updates correctly
             })
             .addCase(increaseQuantThunk.fulfilled, (state) => {
                 state.itemInCart++;
