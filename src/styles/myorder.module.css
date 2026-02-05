@@ -1,8 +1,7 @@
-
 /* ============================== MyOrder.js ===========================  */
 
 /* main container of the page */
-.mainContainer{
+.mainContainer {
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -11,16 +10,16 @@
 }
 
 /* heading of the page */
-.orderHeading{
-    color:#E96D71;
+.orderHeading {
+    color: #E96D71;
 }
 
 /* list of all the order's in user's database */
-.orderListContainer{
+.orderListContainer {
     width: 75%;
 }
 
-.mainContainer a{
+.mainContainer a {
     font-size: 1.2rem;
     text-decoration: underline;
     font-weight: 700;
@@ -32,18 +31,18 @@
 
 
 /* single order container */
-.orderListContainer > div{
+.orderListContainer>div {
     padding: 5px;
     width: 100%;
     border-radius: 4px;
     margin: 10px;
     background-image: linear-gradient(120deg, #ffefbe 0%, #fbc1b0 100%);
-    box-shadow: 0px 0px 6px 2px grey;
+    box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
 }
 
 
 /* table inside the order list */
-table{
+table {
     width: 100%;
     font-weight: 600;
     border-collapse: collapse;
@@ -51,13 +50,13 @@ table{
 }
 
 /* table's cell style */
-th,td{
+th,
+td {
     background-color: transparent;
-    border:2px solid black;
+    border: 2px solid #fbc1b0;
 }
 
 /* table heading color */
-th{
+th {
     color: #5f5569;
 }
-

@@ -1,53 +1,110 @@
-
 /* ======================= SignIn.js and SignUp.js ======================= */
 
-
 /* main page container */
-.container{
+.container {
     display: flex;
-    justify-content:space-around;
+    justify-content: center;
     align-items: center;
+    min-height: 80vh;
+    background-color: transparent;
 }
 
 /* container of input form */
 .inputForm {
-    width: 250px;
-    height: 300px;
-    margin-top: 5%;
+    width: 400px;
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     text-align: center;
-    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.inputForm h1 {
+    color: #4a4a4a;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    font-weight: 700;
 }
 
 /* input tag within the container */
 .inputForm input {
-    width: 95%;
-    height: 35px;
-    margin-bottom: 5%;
-    border-radius: 4px;
+    width: 100%;
+    height: 48px;
+    border-radius: 12px;
     font-size: 1rem;
-    color: #E96D71;
-    border: 1px solid rgb(253, 182, 28);
+    color: #4a4a4a;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: #fafafa;
+    padding: 0 15px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.inputForm input:focus {
+    border-color: #ff953a;
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(255, 149, 58, 0.1);
 }
 
 /* submit button */
-.inputForm button{
+.inputForm button {
     width: 100%;
-    height: 35px;
-    border-radius: 4px;
-    color:white;
+    height: 48px;
+    border-radius: 12px;
+    color: white;
     border: none;
-    font-size: 1.2rem;
-    background-image: linear-gradient( 135deg, #ff953a 10%, #DE4313 100%);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    background-image: linear-gradient(135deg, #ff953a 0%, #ff7e5f 100%);
+    box-shadow: 0 4px 10px rgba(255, 126, 95, 0.3);
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.inputForm button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 126, 95, 0.4);
+    background-image: linear-gradient(135deg, #ff8c2a 0%, #ff6b4a 100%);
+}
+
+.inputForm button:active {
+    transform: translateY(0);
+}
+
+/* extra spacing elements usually handled by <br> in the js, 
+   but we can ensure flow with flex if needed. 
+   The margin-bottom on inputs handles separation well enough. */
+
+/* text/link container */
+.inputForm span,
+.inputForm a {
+    font-size: 1rem;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.inputForm span {
+    color: #888;
 }
 
 /* link inside form  */
-.inputForm a{
-    color: blueviolet;
-    font-size: 1.2rem;
+.inputForm a {
+    color: #E96D71;
     font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+    margin-left: 5px;
 }
 
 /* hovering over link */
-.inputForm a:hover{
-    color: blue;
+.inputForm a:hover {
+    color: #ff953a;
+    text-decoration: underline;
 }
